@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import express from 'express'
 import { connectDB } from './config/db.js'
@@ -13,6 +14,7 @@ const app = express()
 /**Parser */
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
 
 /**Routes */
 app.use('/api/users', userRoutes)
