@@ -2,6 +2,7 @@ import { React, useEffect, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import FormContainer from '../components/FormContainer'
 import { setCredentials } from '../slices/authSlice'
 import { useLoginMutation } from '../slices/usersApiSlice'
@@ -27,7 +28,7 @@ const LoginPage = () => {
       dispatch(setCredentials({ ...res }))
       navigate('/')
     } catch (error) {
-      console.log(error?.data?.message || error.error)
+      toast.error(error?.data?.message || error.error)
     }
   }
 
