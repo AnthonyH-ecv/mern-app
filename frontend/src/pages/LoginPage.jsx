@@ -1,15 +1,34 @@
-import { React, useState } from 'react'
+import { React, useEffect, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
 import FormContainer from '../components/FormContainer'
+import { setCredentials } from '../slices/authSlice'
+import { useLoginMutation } from '../slices/usersApiSlice'
 
 const LoginPage = () => {
+  const { userInfo } = useSelector((state) => state.auth)
+  const [login, { isLoading }] = useLoginMutation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/')
+    }
+  }, [navigate, userInfo])
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    console.log('submit')
+    try {
+      const res = await login({ email, password }).unwrap()
+      dispatch(setCredentials({ ...res }))
+      navigate('/')
+    } catch (error) {
+      console.log(error?.data?.message || error.error)
+    }
   }
 
   return (
@@ -22,7 +41,7 @@ const LoginPage = () => {
             type="email"
             placeholder="Enter Email"
             value={email}
-            onChange={() => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
         </Form.Group>
         <Form.Group className="my-2" controlId="password">
@@ -31,7 +50,7 @@ const LoginPage = () => {
             type="password"
             placeholder="Enter Password"
             value={password}
-            onChange={() => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
         <Button type="submit" variant="primary" className="mt-3">
