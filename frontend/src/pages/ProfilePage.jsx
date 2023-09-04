@@ -1,13 +1,15 @@
 import { React, useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import FormContainer from '../components/FormContainer'
+import { setCredentials } from '../slices/authSlice'
+import { useUpdateUserMutation } from '../slices/usersApiSlice'
+import Loader from './../components/Loader'
 
 const ProfilePage = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const [updateProfile, { isLoading }] = useUpdateUserMutation()
   const { userInfo } = useSelector((state) => state.auth)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -24,7 +26,19 @@ const ProfilePage = () => {
     if (password !== confirmPassword) {
       toast.error('Passwords do not match')
     } else {
-      console.log('submit')
+      try {
+        const res = await updateProfile({
+          _id: userInfo._id,
+          name,
+          email,
+          password,
+        }).unwrap()
+
+        dispatch(setCredentials({ ...res }))
+        toast.success('Profile updated')
+      } catch (error) {
+        toast.error(error?.data?.message || error.error)
+      }
     }
   }
 
@@ -68,6 +82,7 @@ const ProfilePage = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
+        {isLoading && <Loader />}
         <Button
           onClick={submitHandler}
           type="submit"
