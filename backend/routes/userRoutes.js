@@ -10,11 +10,11 @@ import { protect } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
-router.post('/', registerUser)
-router.post('/auth', authUser)
-router.post('/logout', logoutUser)
+router.post('api/users/', registerUser)
+router.post('api/users/auth', authUser)
+router.post('api/users/logout', logoutUser)
 router
-  .route('/profile')
+  .route('api/users/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile)
 

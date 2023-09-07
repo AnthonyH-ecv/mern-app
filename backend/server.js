@@ -19,8 +19,8 @@ app.use(cookieParser())
 app.use(cors())
 
 /**Routes */
-app.use('/api/users', userRoutes)
-app.get('/', (req, res) => res.send('Server is ready'))
+app.use('/', userRoutes)
+//app.get('/', (req, res) => res.send('Server is ready'))
 
 /**Middleware */
 app.use(notFound)
