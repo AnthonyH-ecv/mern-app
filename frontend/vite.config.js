@@ -10,7 +10,7 @@ export default ({ mode }) => {
     server: {
       port: 3000,
       proxy: {
-        '/api': {
+        '/api/users': {
           target: process.env.VITE_API_URL_TARGET,
           changeOrigin: true,
         },
